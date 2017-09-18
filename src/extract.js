@@ -60,6 +60,7 @@ function extract(code) {
   })
 
   parser.parseComplete(code)
+  scriptCode = extractImports(code) + scriptCode
 
   if (!indent) {
     indent = 0
@@ -67,6 +68,11 @@ function extract(code) {
   // trim the last line's ending spaces
   scriptCode = scriptCode.replace(/[ \t]*$/, '')
   return { code: scriptCode, line: tagStartLineNum, indent: indent }
+}
+
+function extractImports(code) {
+  var found = code.match(/^\s*([^<>]*(?:import|require)[^<>]+)\s*</)
+  return found ? found[1] : ''
 }
 
 module.exports = extract

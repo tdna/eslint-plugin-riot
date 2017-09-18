@@ -193,3 +193,44 @@ test('extract script with tab', function(t) {
   )
   t.end()
 })
+
+test('extract script with imports', function(t) {
+  assertExtract(t,
+    s('import { max } from \'utils\'',
+      'import moment from \'moment\'',
+      '<x-tag>',
+      '<script>var foo = 1</script>',
+      '</x-tag>'),
+    s('import { max } from \'utils\'',
+      'import moment from \'moment\'',
+      'var foo = 1'),
+    4, 0
+  )
+  t.end()
+})
+
+test('extract script with require', function(t) {
+  assertExtract(t,
+    s('var moment = require(\'moment\');',
+      '<x-tag>',
+      '<script>var foo = 1</script>',
+      '</x-tag>'),
+    s('var moment = require(\'moment\');',
+      'var foo = 1'),
+    3, 0
+  )
+  t.end()
+})
+
+test('extract imports with whitespace', function(t) {
+  assertExtract(t,
+    s(' import moment from \'moment\'',
+      '<x-tag>',
+      '<script>var foo = 1</script>',
+      '</x-tag>'),
+    s('import moment from \'moment\'',
+      'var foo = 1'),
+    3, 0
+  )
+  t.end()
+})
